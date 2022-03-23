@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [SerializeField]
     private float _speed;
+    [SerializeField]
+    public int Health { get; set; }
 
     //jump force
     [SerializeField]
@@ -84,6 +86,12 @@ public class Player : MonoBehaviour
         {
             _playerAnim.RegAttack();
         }
+    }
+
+    public void Damage()
+    {
+        Debug.Log("Player Damage()");
+
     }
 
     private void Flip(float movement)
