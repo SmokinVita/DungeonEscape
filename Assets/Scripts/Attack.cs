@@ -24,7 +24,7 @@ public class Attack : MonoBehaviour
 
     IEnumerator AttackDamageRoutine()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.8f);
         _canDamage = true;
     }
 }

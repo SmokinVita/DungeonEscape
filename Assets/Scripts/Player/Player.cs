@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Player : MonoBehaviour, IDamageable
 {
+    //variable for amount of diamonds
+    [SerializeField]
+    private int _diamondAmount;
+
     [SerializeField]
     private float _speed;
     [SerializeField]
@@ -16,7 +21,8 @@ public class Player : MonoBehaviour, IDamageable
     private float _raycastDistance = .5f;
     [SerializeField]
     private LayerMask _layermask;
-    private bool _isGrounded = false;
+    private bool isJumping = false;
+    private bool isDead = false;
 
     private Rigidbody2D _rb2D;
     private SpriteRenderer _playerSprite;
@@ -26,6 +32,8 @@ public class Player : MonoBehaviour, IDamageable
 
     void Start()
     {
+        UIManager.Instance.UpdateGemCount(_diamondAmount);
+
         _rb2D = GetComponent<Rigidbody2D>();
         if (_rb2D == null)
         {
@@ -49,10 +57,15 @@ public class Player : MonoBehaviour, IDamageable
         {
             Debug.LogError("Sword Arc Sprite Renderer is null!");
         }
+
+        Health = 4;
     }
 
     void Update()
     {
+        if (isDead == true)
+            return;
+
         Movement();
         Attack();
 
@@ -61,8 +74,10 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Movement()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        _isGrounded = IsGrounded();
+        float horizontalInput = CrossPlatformInputManager.GetAxisRaw("Horizontal");// Input.GetAxisRaw("Horizontal");
+
+        if (isJumping == true)
+            IsGrounded();
 
         _playerAnim.RunAnimation(horizontalInput);
 
@@ -70,11 +85,11 @@ public class Player : MonoBehaviour, IDamageable
 
 
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if ((Input.GetKeyDown(KeyCode.Space) || CrossPlatformInputManager.GetButtonDown("B_Button")) && IsGrounded())
         {
             _playerAnim.Jump(true);
-            StartCoroutine(JumpResetRoutine());
             _rb2D.velocity = new Vector2(_rb2D.velocity.x, _jumpForce);
+            isJumping = true;
         }
 
         _rb2D.velocity = new Vector2(horizontalInput * _speed, _rb2D.velocity.y);
@@ -82,7 +97,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Attack()
     {
-        if (Input.GetMouseButtonDown(0) && IsGrounded())
+        if ((Input.GetMouseButtonDown(0) || CrossPlatformInputManager.GetButtonDown("A_Button")) && IsGrounded())
         {
             _playerAnim.RegAttack();
         }
@@ -90,7 +105,24 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Damage()
     {
+        if (isDead == true)
+            return;
+
         Debug.Log("Player Damage()");
+        Health--;
+        UIManager.Instance.UpdateLives(Health);
+
+        if(Health <= 0)
+        {
+            _playerAnim.PlayerDeath();
+            isDead = true;
+        }
+
+        //remove 1 health
+        //update UI Display
+        //check for dead
+        //play death animation
+
 
     }
 
@@ -118,15 +150,32 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
+    public void AddDiamonds(int diamonds)
+    {
+        _diamondAmount += diamonds;
+        UIManager.Instance.UpdateGemCount(_diamondAmount);
+    }
+
+    public int CheckDiamonAmount()
+    {
+        return _diamondAmount;
+    }
+
+    public void SubtractDiamonds(int diamondsLost)
+    {
+        _diamondAmount -= diamondsLost;
+        UIManager.Instance.UpdateGemCount(_diamondAmount);
+    }
+
     private bool IsGrounded()
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, _raycastDistance, _layermask);
-        return hitInfo.collider;
-    }
+        if (hitInfo.collider == true)
+        {
+            isJumping = false;
+            _playerAnim.Jump(false);
+        }
 
-    IEnumerator JumpResetRoutine()
-    {
-        yield return new WaitForSeconds(1f);
-        _playerAnim.Jump(false);
+        return hitInfo.collider;
     }
 }

@@ -38,4 +38,14 @@ public class PlayerAnimation : MonoBehaviour
         _anim.SetTrigger("Attack");
         _swordAnim.SetTrigger("SwordAnimation");
     }
+
+    public void PlayerHit()
+    {
+        _anim.SetTrigger("Hit");
+    }
+
+    public void PlayerDeath()
+    {
+        _anim.SetTrigger("Death");
+    }
 }

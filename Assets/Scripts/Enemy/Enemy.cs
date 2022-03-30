@@ -5,6 +5,9 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField]
+    protected GameObject diamondPrefab;
+
+    [SerializeField]
     protected int health;
     [SerializeField]
     protected float speed;
@@ -44,6 +47,7 @@ public abstract class Enemy : MonoBehaviour
 
         currentTarget = pointA;
     }
+
 
     private void Start()
     {
