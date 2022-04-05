@@ -59,18 +59,22 @@ public class Shop : MonoBehaviour
             switch(selectedItem)
             {
                 case 0:
+                    GameManager.instance.HasFlameSword = true;
                     break;
                 case 1:
+                    GameManager.instance.HasBootsOfFlight = true;
                     break;
                 case 2:
                     GameManager.instance.HasKeyToCastle = true;
                     break;
             }
             _player.SubtractDiamonds(selectedItemCost);
+            UIManager.Instance.BoughtItems(selectedItem);
         }
         else
         {
             Debug.Log("Not Enough Gems");
+            UIManager.Instance.NotEnoughCoins();
             UIManager.Instance.CloseShop();
         }
     }

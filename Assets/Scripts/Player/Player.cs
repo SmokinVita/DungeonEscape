@@ -97,7 +97,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Attack()
     {
-        if ((Input.GetMouseButtonDown(0) || CrossPlatformInputManager.GetButtonDown("A_Button")) && IsGrounded())
+        if (CrossPlatformInputManager.GetButtonDown("A_Button") && IsGrounded())
         {
             _playerAnim.RegAttack();
         }
@@ -117,13 +117,6 @@ public class Player : MonoBehaviour, IDamageable
             _playerAnim.PlayerDeath();
             isDead = true;
         }
-
-        //remove 1 health
-        //update UI Display
-        //check for dead
-        //play death animation
-
-
     }
 
     private void Flip(float movement)
@@ -178,4 +171,6 @@ public class Player : MonoBehaviour, IDamageable
 
         return hitInfo.collider;
     }
+
+
 }

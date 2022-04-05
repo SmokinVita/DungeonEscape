@@ -17,11 +17,16 @@ public class GameManager : MonoBehaviour
     }
 
     public bool HasKeyToCastle { get; set; }
+    public bool HasFlameSword { get; set; }
+    public bool HasBootsOfFlight { get; set; }
+    public Player Player { get; private set; }
 
     void Awake()
     {
         _instance = this;
+        Player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
+    
 
 }

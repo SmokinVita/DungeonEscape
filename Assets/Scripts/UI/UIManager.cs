@@ -33,6 +33,17 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _selectionImg;
 
+    [SerializeField]
+    private TMP_Text _hasKeyText;
+    [SerializeField]
+    private TMP_Text _hasNoKeyText;
+
+    [SerializeField]
+    private TMP_Text _notEnoughCoinsText;
+
+    [SerializeField]
+    private Button _flameSwordButton, _bootsOfFlightButton, _castleKeyButton;
+
     void Awake()
     {
         _instance = this;
@@ -46,6 +57,22 @@ public class UIManager : MonoBehaviour
     public void CloseShop()
     {
         _shopCanvas.SetActive(false);
+    }
+
+    public void BoughtItems(int boughtItem)
+    {
+        switch(boughtItem)
+        {
+            case 0:
+                _flameSwordButton.interactable = false;
+                break;
+            case 1:
+                _bootsOfFlightButton.interactable = false;
+                break;
+            case 2:
+                _castleKeyButton.interactable = false;
+                break;
+        }
     }
 
     public void UpdateGemCount(int gems)
@@ -69,4 +96,33 @@ public class UIManager : MonoBehaviour
         }
 
     }
+
+    public void ShowHasKeyText()
+    {
+        _hasKeyText.enabled = true;
+    }
+
+    public void ShowHasNoKeyText()
+    {
+        _hasNoKeyText.enabled = true;
+    }
+
+    public void HideHasKeyText()
+    {
+        _hasKeyText.enabled = false;
+        _hasNoKeyText.enabled = false;
+    }
+
+    public void NotEnoughCoins()
+    {
+        _notEnoughCoinsText.enabled = true;
+        StartCoroutine(NotEnoughCoinsRoutine());
+    }
+
+    IEnumerator NotEnoughCoinsRoutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        _notEnoughCoinsText.enabled = false;
+    }
+
 }
